@@ -1,0 +1,170 @@
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark d-flex justify-content-between">
+    <a class="navbar-brand" href="#">LAB 14</a>
+    <!-- <div>
+        <a class="text-white" href="https://github.com/ngdevelop-tech/angular-pdfmake-invoice-generator"
+            target="_blank"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a>
+    </div> -->
+</nav>
+<form #invoiceForm="ngForm">
+    <div class="container-fluid pt-2 mb-5">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card border-secondary">
+                    <div class="card-body">
+                        <h4 class="card-title">Detalles</h4>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" class="form-control" name="name" id="name"
+                                        [ngClass]="{'is-invalid': invoiceForm.submitted && CustName.invalid}"
+                                        [(ngModel)]="invoice.customerName" #CustName="ngModel" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="email">Email ID</label>
+                                    <input type="email" class="form-control" name="email" id="email"
+                                        [(ngModel)]="invoice.email" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="contactNo">Contact No.</label>
+                                    <input type="number" class="form-control" name="contactNo" id="contactNo"
+                                        [ngClass]="{'is-invalid': invoiceForm.submitted && ContactNo.invalid}"
+                                        [(ngModel)]="invoice.contactNo" #ContactNo="ngModel" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="dueDate">Due Date</label>
+                                    <input type="date" class="form-control" name="dueDate" id="dueDate"
+                                        [ngClass]="{'is-invalid': invoiceForm.submitted && DueDate.invalid}"
+                                        [(ngModel)]="invoice.dueDate" #DueDate="ngModel" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="gstIn">GSTIN</label>
+                                    <input type="text" class="form-control" name="gstIn" id="gstIn"
+                                        [ngClass]="{'is-invalid': invoiceForm.submitted && GstIn.invalid}"
+                                        [(ngModel)]="invoice.gstIn" #GstIn="ngModel">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="place">PLACE OF SUPPLY</label>
+                                    <input type="text" class="form-control" name="place" id="place"
+                                        [ngClass]="{'is-invalid': invoiceForm.submitted && Place.invalid}"
+                                        [(ngModel)]="invoice.place" #Place="ngModel" required>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="Billaddress">Billing Address </label>
+                                    <textarea class="form-control" name="address" id="address" row="3"
+                                        [ngClass]="{'is-invalid': invoiceForm.submitted && billAddress.invalid}"
+                                        [(ngModel)]="invoice.billTo" #billAddress="ngModel" required></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="Shipaddress">Shipping Address 
+                                        <div class="form-check">
+                                            <input (click)="toggleAddress(invoice.sameAsBilling)" [checked]="invoice.sameAsBilling" class="form-check-input" type="checkbox" id="flexCheckDefault">
+                                            <label class="form-check-label" for="flexCheckDefault">
+                                              Same as Billing Address
+                                            </label>
+                                          </div>
+                                    </label>
+                                    <textarea *ngIf="!invoice.sameAsBilling; else sameAddress" class="form-control" name="address" id="address" row="3"
+                                        [ngClass]="{'is-invalid': invoiceForm.submitted && shipAddress.invalid}"
+                                        [(ngModel)]="invoice.shipTo" #shipAddress="ngModel" required></textarea>
+                                    <ng-template #sameAddress>
+                                        <textarea class="form-control" name="sameAddress" id="sameAddress" row="3"
+                                        [value]="invoice.billTo" readonly></textarea>
+                                    </ng-template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card border-secondary mt-2">
+                    <div class="card-body">
+                        <h4 class="card-title d-flex justify-content-between">Order Details <button type="button"
+                                class="btn btn-secondary" (click)="addProduct()">+</button></h4>
+                        <div class="row">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th width="1%">#</th>
+                                        <th>Product</th>
+                                        <th>Quantity</th>
+                                        <th>Rate</th>
+                                        <th>Tax %</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let product of invoice.products; let i=index">
+                                        <td>
+                                        {{ i + 1 }}
+                                        </td>
+                                        <td scope="row">
+                                            <input type="text" class="form-control" name="productName{{i}}"
+                                                [ngClass]="{'is-invalid': invoiceForm.submitted && ProductName.invalid}"
+                                                id="productName" [(ngModel)]="product.name" #ProductName="ngModel"
+                                                required>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control" name="quantity{{i}}" id="quantity"
+                                                [ngClass]="{'is-invalid': invoiceForm.submitted && ProductQty.invalid}"
+                                                [(ngModel)]="product.qty" #ProductQty="ngModel" required>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control" name="price{{i}}" id="price"
+                                                [ngClass]="{'is-invalid': invoiceForm.submitted && ProductPrice.invalid}"
+                                                [(ngModel)]="product.price" #ProductPrice="ngModel" required>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control" name="tax{{i}}" id="tax"
+                                                [ngClass]="{'is-invalid': invoiceForm.submitted && ProductTax.invalid}"
+                                                [(ngModel)]="product.tax" #ProductTax="ngModel" required>
+                                        </td>
+                                        <td>
+                                            {{product.price * product.qty || ''}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card border-secondary mt-2">
+                    <div class="card-body">
+                        <h4 class="card-title">Notes</h4>
+                        <div class="form-group">
+                            <textarea class="form-control" name="additionalDetails" rows="3"
+                                [(ngModel)]="invoice.additionalDetails"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-dark btn-lg btn-block"
+                    (click)="invoiceForm.valid ? generatePDF('download') : ''">Download Invoice</button>
+                <button type="submit" class="btn btn-dark btn-lg btn-block"
+                    (click)="invoiceForm.valid ? generatePDF('print') : ''">Print
+                    Invoice</button>
+                <button type="submit" class="btn btn-dark btn-lg btn-block"
+                    (click)="invoiceForm.valid ? generatePDF() : ''">Open
+                    Invoice</button>
+            </div>
+        </div>
+    </div>
+</form>
+<footer class="fixed-bottom">
+
+</footer>
